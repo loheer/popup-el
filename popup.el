@@ -31,7 +31,7 @@
 
 (require 'cl-lib)
 
-(defconst popup-version "0.5.3")
+(defconst popup-version "0.5.4")
 
 
 
@@ -242,7 +242,8 @@ ITEM is not string."
                            sublist
                            document
                            symbol
-                           summary)
+                           summary
+			   icon)
   "Utility function to make popup item. See also
 `popup-item-propertize'."
   (popup-item-propertize name
@@ -253,6 +254,7 @@ ITEM is not string."
                          'document document
                          'symbol symbol
                          'summary summary
+			 'icon icon
                          'sublist sublist))
 
 (defsubst popup-item-value (item)               (popup-item-property item 'value))
@@ -263,6 +265,7 @@ ITEM is not string."
 (defsubst popup-item-document (item)            (popup-item-property item 'document))
 (defsubst popup-item-summary (item)             (popup-item-property item 'summary))
 (defsubst popup-item-symbol (item)              (popup-item-property item 'symbol))
+(defsubst popup-item-icon (item)                (popup-item-property item 'icon))
 (defsubst popup-item-sublist (item)             (popup-item-property item 'sublist))
 
 (defun popup-item-documentation (item)
