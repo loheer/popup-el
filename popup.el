@@ -27,6 +27,17 @@
 ;; and popup menus.
 ;; See README.markdown for more information.
 
+
+;; TODO:
+
+;; Consider the following
+;; 
+;; (popup-menu* (list (popup-make-item "Yes":value t :symbol (propertize " " 'display (create-image "/home/b/loheer/.emacs.d/elpa/mode-icons-20160531.1708/icons/emacs.xpm" )))
+;;                    (popup-make-item "No" :value nil)) :symbol t)
+;; 
+;;
+;;
+
 ;;; Code:
 
 (require 'cl-lib)
@@ -66,6 +77,7 @@ This is faster than `prin1-to-string' in many cases."
   (cl-typecase x
     (string x)
     (symbol (symbol-name x))
+    (icon x) ;; TODO
     (integer (number-to-string x))
     (float (number-to-string x))
     (t (format "%s" x))))
@@ -357,6 +369,7 @@ usual."
                                symbol
                                summary
                                summary-face
+			       icon
                                keymap)
   (let* ((overlay (popup-line-overlay popup line))
          (content (popup-create-line-string popup (popup-x-to-string item)
@@ -364,7 +377,8 @@ usual."
                                             :margin-right margin-right
                                             :symbol symbol
                                             :summary summary
-                                            :summary-face summary-face))
+                                            :summary-face summary-face
+					    :icon icon))
          (start 0)
          (prefix (overlay-get overlay 'prefix))
          (postfix (overlay-get overlay 'postfix))
@@ -398,7 +412,8 @@ usual."
                                     margin-right
                                     symbol
                                     summary
-                                    summary-face)
+                                    summary-face
+				    icon)
   (let* ((popup-width (popup-width popup))
          (summary-width (string-width summary))
          (content-width (max
@@ -465,6 +480,7 @@ number at the point."
                         margin-left
                         margin-right
                         symbol
+			icon
                         parent
                         parent-offset
                         keymap)
@@ -637,6 +653,7 @@ KEYMAP is a keymap that will be put on the popup contents."
                             :margin-left-cancel margin-left-cancel
                             :scroll-bar scroll-bar
                             :symbol symbol
+			    :icon icon
                             :cursor 0
                             :offset 0
                             :scroll-top 0
@@ -686,6 +703,7 @@ KEYMAP is a keymap that will be put on the popup contents."
            with margin-left = (make-string (if (popup-margin-left-cancel popup) 0 (popup-margin-left popup)) ? )
            with margin-right = (make-string (popup-margin-right popup) ? )
            with symbol = (popup-symbol popup)
+	   with icon = (popup-icon popup)
            with cursor = (popup-cursor popup)
            with scroll-top = (popup-scroll-top popup)
            with offset = (popup-offset popup)
@@ -715,6 +733,9 @@ KEYMAP is a keymap that will be put on the popup contents."
            for sym = (if symbol
                          (concat " " (or (popup-item-symbol item) " "))
                        "")
+	   for ico = (if icon ;; TODO
+			  (concat " " (or (popup-item-icon item) " "))
+                       "")
            for summary = (or (popup-item-summary item) "")
 
            do
@@ -729,6 +750,7 @@ KEYMAP is a keymap that will be put on the popup contents."
                                 :symbol sym
                                 :summary summary
                                 :summary-face summary-face
+				:icon icon
                                 :keymap keymap)
 
            finally
@@ -749,6 +771,7 @@ KEYMAP is a keymap that will be put on the popup contents."
                                             :margin-right margin-right
                                             :scroll-bar-char scroll-bar-char
                                             :symbol symbol
+					    :icon icon
                                             :summary "")
                        (cl-incf o)))
                    (while (< o height)
@@ -766,6 +789,7 @@ KEYMAP is a keymap that will be put on the popup contents."
                                                 :margin-right margin-right
                                                 :scroll-bar-char scroll-bar-char
                                                 :symbol symbol
+						:icon icon
                                                 :summary ""))))))
 
 (defun popup-hide (popup)
@@ -1313,6 +1337,7 @@ PROMPT is a prompt string when reading events during event loop."
                        margin-right
                        scroll-bar
                        symbol
+		       icon
                        parent
                        parent-offset
                        cursor
@@ -1386,6 +1411,7 @@ If `INITIAL-INDEX' is non-nil, this is an initial index value for
                            :margin-right margin-right
                            :scroll-bar scroll-bar
                            :symbol symbol
+			   :icon icon
                            :parent parent
                            :parent-offset parent-offset))
   (unwind-protect
